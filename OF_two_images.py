@@ -49,7 +49,7 @@ Parameters:
     flow_matrix - the flow matrix represented by offset of x and y
 
 Returns:
-    angles_matrix - the matrix represneted by pi value.
+    angles_matrix - the matrix represneted by degree value.
 """
 def convert_to_angles(flow_matrix):
     
@@ -62,6 +62,34 @@ def convert_to_angles(flow_matrix):
         angles_matrix[x][y] = angle
         
     return angles_matrix
+
+
+"""
+function easy_thresholding() will set a thresholding value and filter the angle_matrix
+
+Parameters:
+    img - the grayscale image matrix
+    angles_matrix - the matrix represneted by pi value.
+    thresholding - corresponding pixel will be black if value is greater than thresholding.
+
+Returns:
+    foreground_matrix - the foreground image filterd by thresholding value
+    binary_mask - the pixel that degree that greater than thresholding will be 255(black)
+"""
+def easy_thresholding(img, angle_matrix, thresholding):
+    
+    matrix_shape = angle_matrix.shape
+    
+    binary_mask = np.zeros(matrix_shape)
+    foreground_matrix = np.zeros(matrix_shape)
+    
+    for x, y in product(range(matrix_shape[0]), range(matrix_shape[1])):
+        if angle_matrix[x][y] > thresholding:
+            binary_mask[x][y] = 255
+            foreground_matrix[x][y] = img[x][y]
+            
+    return foreground_matrix, binary_mask
+
     
 
 
@@ -77,7 +105,23 @@ def main():
     #cv2.imshow('detect preview', draw_flow(car2, prvs, flow, 16))
     #k = cv2.waitKey(0)
     
-    convert_to_angles(flow)
+    #convert_to_angles(flow)
+    
+    # angle_matrix is measure by degree now. _ is magnitude
+    _, angle_matrix = cv2.cartToPolar(flow[..., 0], flow[..., 1], angleInDegrees = True)
+    easy_foreground_matrix, easy_binary_mask = easy_thresholding(prvs, angle_matrix, 170)
+    
+    easy_foreground_matrix = easy_foreground_matrix.astype(np.uint8) 
+    easy_binary_mask = easy_binary_mask.astype(np.uint8) 
+    
+    cv2.imshow('easy_binary_mask',easy_binary_mask)
+    cv2.imshow('easy_foreground_matrix', easy_foreground_matrix)
+    
+    cv2.imwrite('easy_binary_mask.png',easy_binary_mask) 
+    cv2.imwrite('easy_foreground_matrix.png',easy_foreground_matrix)
+    
+    k = cv2.waitKey(0)
+    cv2.destroyAllWindows() 
     
     
 main()
