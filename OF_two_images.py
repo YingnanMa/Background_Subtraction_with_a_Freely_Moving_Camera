@@ -1,4 +1,5 @@
 import cv2
+from itertools import product
 import numpy as np
 
 
@@ -6,14 +7,25 @@ import numpy as np
 # https://www.digifie.jp/blog/archives/1448
 
 
+"""
+function draw_flow() will visulize the flow
+
+Parameters:
+    img - the second image that used to compute the flow
+    gray - the first image that used to compute the flow
+    flow - the flow matrix represented by offset of x and y
+
+Returns:
+    vis - the image matrix
+"""
 def draw_flow(img, gray, flow, step=16):
+    
     h, w = img.shape[:2]
     y, x = np.mgrid[step/2:h:step, step/2:w:step].reshape(2,-1).astype(int)
     fx, fy = flow[y,x].T
     lines = np.vstack([x, y, x+fx, y+fy]).T.reshape(-1, 2, 2)
     lines = np.int32(lines)
  
-
     vis = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR) 
     vis = 255 - vis 
     rad = int(step/2)
@@ -29,6 +41,29 @@ def draw_flow(img, gray, flow, step=16):
     return vis
 
 
+"""
+function convert_to_angles() will transfer flow matrix to angle matrix, which
+represented by pi value.
+
+Parameters:
+    flow_matrix - the flow matrix represented by offset of x and y
+
+Returns:
+    angles_matrix - the matrix represneted by pi value.
+"""
+def convert_to_angles(flow_matrix):
+    
+    flow_matrix_shape = flow_matrix.shape
+    angles_matrix = np.zeros(flow_matrix_shape[:2])
+    
+    for x, y in product(range(flow_matrix_shape[0]), range(flow_matrix_shape[1])):
+        offset_data = flow_matrix[x][y]
+        angle = np.arctan(offset_data[0]/offset_data[1])
+        angles_matrix[x][y] = angle
+        
+    return angles_matrix
+    
+
 
 def main():
     car1 = cv2.imread("car1.jpg")
@@ -39,20 +74,10 @@ def main():
     
     flow = cv2.calcOpticalFlowFarneback(prvs,next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
     
-    #mag, ang = cv2.cartToPolar(flow[...,0], flow[...,1])
+    #cv2.imshow('detect preview', draw_flow(car2, prvs, flow, 16))
+    #k = cv2.waitKey(0)
     
-    #hsv = np.zeros_like(car1)
-    #hsv[...,1] = 255
-    #hsv[...,0] = ang*180/np.pi/2
-    #hsv[...,2] = cv2.normalize(mag,None,0,255,cv2.NORM_MINMAX)
-    #rgb = cv2.cvtColor(hsv,cv2.COLOR_HSV2BGR)
+    convert_to_angles(flow)
     
-    #cv2.imshow('car2',rgb)
-    
-    cv2.imshow('detect preview', draw_flow(car2, prvs, flow, 16))
-    
-    
-    k = cv2.waitKey(0)
-    print(flow)
     
 main()
