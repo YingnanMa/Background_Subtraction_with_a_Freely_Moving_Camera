@@ -16,21 +16,26 @@ class Robust_pca:
         self.L=np.zeros(self.M.shape)
         self.lam=1/np.sqrt(np.max(self.M.shape))
         self.mu=10*self.lam
-        self.mu_inv=1/self.mu
+        self.mu_inv=1/(self.mu)
         self.tolerance=1e-6
         self.max_iter=1000
 
     #function used to compute Sk+1 = Sλ/μ(M − Lk+1 + μ−1Yk)
     def S_function(self,M,tau):
-        result=np.sign(M)*np.maximum(np.abs(M)-tau,np.zeros(M.shape))
+        result=np.sign(M)*np.maximum(np.abs(M)-tau,0)
         return result
 
     #function used to compute Lk+1 = D1/μ(M− Sk + Yk/μ)
     def D_function(self,M,tau):
         U,S,V=np.linalg.svd(M,full_matrices=False)
+        #Vnew=V.T
         result_s=self.S_function(S,tau)
-        result=np.dot(np.dot(U,result_s).T,V)
-        #result=np.dot(U,np.dot(result_s,V.T))
+        US=np.dot(U,np.diag(result_s))
+        result=np.dot(US,V)
+        #result=np.dot(np.dot(U,result_s),V.T)
+        #result=np.dot(np.dot(result_s.T,U[...,0]),V)
+        #result=np.dot(U,np.dot(result_s,V))
+        #result=np.dot(U,np.dot(np.diag(result_s),V))
         return result
 
     #function : generate Robust PCA
@@ -44,9 +49,9 @@ class Robust_pca:
         #run loop until reach max iteration or converged
         for i in range (0,self.max_iter):
             #compute Lk+1 = D1/μ(M− Sk + Yk/μ)
-            Lk=self.D_function(self.M-Sk+Yk*self.mu_inv,self.mu_inv)
+            Lk=self.D_function(self.M-Sk+self.mu_inv*Yk,self.mu_inv)
             #compute Sk+1 = Sλ/μ(M − Lk+1 + Yk/μ−1)
-            Sk=self.S_function(self.M-Lk+(Yk*self.mu_inv),self.mu_inv*self.lam)
+            Sk=self.S_function(self.M-Lk+self.mu_inv*Yk,self.mu_inv*self.lam)
             #compute Yk+1 = Yk + μ(M − Lk+1 − Sk+1)
             Yk=Yk+self.mu*(self.M-Lk-Sk)
             #compute the error using Frobenius norm
