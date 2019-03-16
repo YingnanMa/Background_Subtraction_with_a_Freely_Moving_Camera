@@ -17,6 +17,7 @@ Parameters:
 Returns:
     vis - the image matrix
 """
+
 def draw_flow(img, gray, flow, step=16):
 
     h, w = img.shape[:2]
@@ -97,25 +98,36 @@ def main():
 
     flow = cv2.calcOpticalFlowFarneback(prvs,next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
 
+
     # _ is magnitude and angle_matrix is measure by degree now.
     _, angle_matrix = cv2.cartToPolar(flow[..., 0], flow[..., 1], angleInDegrees = True)
-    easy_foreground_matrix, easy_binary_mask = easy_thresholding(prvs, angle_matrix, 170)
+
+    #np.imwrite(angle_matrix)
 
     #implement Robust PCA based on the coarse foreground
-    pca_implement=Robust_pca(easy_foreground_matrix)
+    pca_implement=Robust_pca(angle_matrix)
     pca_background_matrix,pca_foreground_matrix=pca_implement.generate_pca()
+    #pca_foreground_matrix, easy_binary_mask = easy_thresholding(prvs, pca_foreground_matrix, 170)
+
+    #angle_matrix = (angle_matrix/360)*255
+
+    #cv2.imshow('angle_matrix', angle_matrix)
+
     #pca_binary_mask=Robust_pca(easy_binary_mask)
 
     pca_foreground_matrix= pca_foreground_matrix.astype(np.uint8)
+    pca_background_matrix= pca_background_matrix.astype(np.uint8)
     #pca_binary_mask = pca_binary_mask.astype(np.uint8)
 
     #cv2.imshow('pca_binary_mask',pca_binary_mask)
-    cv2.imshow('pca_foreground_matrix', pca_foreground_matrix)
+    cv2.imshow('pca_foreground_matrix',pca_foreground_matrix)
+    cv2.imshow('pca_background_matrix',pca_background_matrix)
 
     #cv2.imwrite('pca_binary_mask.png',pca_binary_mask)
     cv2.imwrite('pca_foreground_matrix.png',pca_foreground_matrix)
+    cv2.imwrite('pca_background_matrix.png',pca_background_matrix)
 
-    k = cv2.waitKey(0)
+    #k = cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 main()
