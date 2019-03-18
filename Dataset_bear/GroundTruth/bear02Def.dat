@@ -1,0 +1,161 @@
+Ground truth definition file; do not change!
+
+Total number of regions:
+2
+Scale of region 0:
+16777215
+Scale of region 1:
+65535
+
+Confusion penality matrix:
+0 1
+1 0
+
+Total number of frames in this shot:
+458
+Total number of labeled frames for this shot:
+24
+Frame number:
+0
+File name:
+bear02_0001_gt.ppm
+Input file name:
+bear02_0001.ppm
+Frame number:
+19
+File name:
+bear02_0020_gt.ppm
+Input file name:
+bear02_0020.ppm
+Frame number:
+39
+File name:
+bear02_0040_gt.ppm
+Input file name:
+bear02_0040.ppm
+Frame number:
+59
+File name:
+bear02_0060_gt.ppm
+Input file name:
+bear02_0060.ppm
+Frame number:
+79
+File name:
+bear02_0080_gt.ppm
+Input file name:
+bear02_0080.ppm
+Frame number:
+99
+File name:
+bear02_0100_gt.ppm
+Input file name:
+bear02_0100.ppm
+Frame number:
+119
+File name:
+bear02_0120_gt.ppm
+Input file name:
+bear02_0120.ppm
+Frame number:
+139
+File name:
+bear02_0140_gt.ppm
+Input file name:
+bear02_0140.ppm
+Frame number:
+159
+File name:
+bear02_0160_gt.ppm
+Input file name:
+bear02_0160.ppm
+Frame number:
+179
+File name:
+bear02_0180_gt.ppm
+Input file name:
+bear02_0180.ppm
+Frame number:
+199
+File name:
+bear02_0200_gt.ppm
+Input file name:
+bear02_0200.ppm
+Frame number:
+219
+File name:
+bear02_0220_gt.ppm
+Input file name:
+bear02_0220.ppm
+Frame number:
+239
+File name:
+bear02_0240_gt.ppm
+Input file name:
+bear02_0240.ppm
+Frame number:
+259
+File name:
+bear02_0260_gt.ppm
+Input file name:
+bear02_0260.ppm
+Frame number:
+279
+File name:
+bear02_0280_gt.ppm
+Input file name:
+bear02_0280.ppm
+Frame number:
+299
+File name:
+bear02_0300_gt.ppm
+Input file name:
+bear02_0300.ppm
+Frame number:
+319
+File name:
+bear02_0320_gt.ppm
+Input file name:
+bear02_0320.ppm
+Frame number:
+339
+File name:
+bear02_0340_gt.ppm
+Input file name:
+bear02_0340.ppm
+Frame number:
+359
+File name:
+bear02_0360_gt.ppm
+Input file name:
+bear02_0360.ppm
+Frame number:
+379
+File name:
+bear02_0380_gt.ppm
+Input file name:
+bear02_0380.ppm
+Frame number:
+399
+File name:
+bear02_0400_gt.ppm
+Input file name:
+bear02_0400.ppm
+Frame number:
+419
+File name:
+bear02_0420_gt.ppm
+Input file name:
+bear02_0420.ppm
+Frame number:
+439
+File name:
+bear02_0440_gt.ppm
+Input file name:
+bear02_0440.ppm
+Frame number:
+457
+File name:
+bear02_0458_gt.ppm
+Input file name:
+bear02_0458.ppm
