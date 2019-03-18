@@ -62,39 +62,80 @@ def convert_to_angles(flow_matrix):
 
     return angles_matrix
 
+"""
+function easy_thresholding() will set a thresholding value and filter the angle_matrix
 
-def main():
-    #read image
-    car1 = cv2.imread("bear02_0055.jpg")
-    car2 = cv2.imread("bear02_0056.jpg")
+Parameters:
+    img - the grayscale image matrix
+    angles_matrix - the matrix represneted by pi value.
+    thresholding - corresponding pixel will be black if value is greater than thresholding.
 
-    #transfer BGR to Grey
-    prvs = cv2.cvtColor(car1,cv2.COLOR_BGR2GRAY)
-    next = cv2.cvtColor(car2,cv2.COLOR_BGR2GRAY)
+Returns:
+    foreground_matrix - the foreground image filterd by thresholding value
+    binary_mask - the pixel that degree that greater than thresholding will be 255(black)
+"""
+def easy_thresholding(img, angle_matrix, thresholding):
+    print(angle_matrix)
 
-    #calculate optical flow
+    matrix_shape = angle_matrix.shape
+
+    binary_mask = np.zeros(matrix_shape)
+    foreground_matrix = np.zeros(matrix_shape)
+
+    for x, y in product(range(matrix_shape[0]), range(matrix_shape[1])):
+        if angle_matrix[x][y] > thresholding:
+            binary_mask[x][y] = 255
+            foreground_matrix[x][y] = img[x][y]
+
+    return foreground_matrix, binary_mask
+
+def implement_pca_betweem_two_frames(image1, image2):
+    pic1 = cv2.imread(image1)
+    pic2 = cv2.imread(image2)
+    
+
+    prvs = cv2.cvtColor(pic1,cv2.COLOR_BGR2GRAY)
+    next = cv2.cvtColor(pic2,cv2.COLOR_BGR2GRAY)
+
     flow = cv2.calcOpticalFlowFarneback(prvs,next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
 
-    # get angle matrix : _ is magnitude and angle_matrix is measure by degree now.
+
+    # _ is magnitude and angle_matrix is measure by degree now.
     _, angle_matrix = cv2.cartToPolar(flow[..., 0], flow[..., 1], angleInDegrees = True)
 
-    #implement Robust PCA based on the angle matrix
+    #np.imwrite(angle_matrix)
+
+    #implement Robust PCA based on the coarse foreground
     pca_implement=Robust_pca(angle_matrix)
     pca_background_matrix,pca_foreground_matrix=pca_implement.generate_pca()
+    #pca_foreground_matrix, easy_binary_mask = easy_thresholding(prvs, pca_foreground_matrix, 170)
 
-    #transfer to uint8
+    #angle_matrix = (angle_matrix/360)*255
+
+    #cv2.imshow('angle_matrix', angle_matrix)
+
+    #pca_binary_mask=Robust_pca(easy_binary_mask)
+
     pca_foreground_matrix= pca_foreground_matrix.astype(np.uint8)
     pca_background_matrix= pca_background_matrix.astype(np.uint8)
+    #pca_binary_mask = pca_binary_mask.astype(np.uint8)
 
-    #show foreground image and background image
-    cv2.imshow('pca_foreground_matrix',pca_foreground_matrix)
-    cv2.imshow('pca_background_matrix',pca_background_matrix)
+    #cv2.imshow('pca_binary_mask',pca_binary_mask)
+    #cv2.imshow('pca_foreground_matrix',pca_foreground_matrix)
+    #cv2.imshow('pca_background_matrix',pca_background_matrix)
 
-    #write foreground image and background image
-    cv2.imwrite('pca_foreground_matrix.png',pca_foreground_matrix)
-    cv2.imwrite('pca_background_matrix.png',pca_background_matrix)
+    #cv2.imwrite('pca_binary_mask.png',draw_flow(car1, prvs, flow, 16))
+    cv2.imwrite('pca_back_ground_matrix_'+str(image1)+'.png',pca_background_matrix)
+    #cv2.imwrite('pca_background_matrix.png',pca_background_matrix)
 
-    #destroy windows
+    #k = cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+
+def main():
+    
+    pre = "bear02_0"
+    for i in range(182, 200):
+        implement_pca_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")        
 
 main()
