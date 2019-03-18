@@ -135,7 +135,7 @@ def implement_pca_betweem_two_frames(image1, image2):
 def main():
     
     pre = "bear02_0"
-    for i in range(182, 200):
+    for i in range(100, 200):
         implement_pca_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")        
 
 main()
