@@ -88,20 +88,18 @@ def implement_average_magnitude_betweem_two_frames(image1, image2):
     #convert to uint8
     foreground = foreground.astype(np.uint8)
 
-    #show image
-    #cv2.imshow('foreground', foreground)
-
     #write image
     cv2.imwrite('foreground_'+str(image1)+'.png',foreground*50)
 
     #destroy table
     cv2.destroyAllWindows()
-    
-    
+
+
 def main():
-    
+
+    #implement background subtraction to all frames
     pre = "bear02_0"
     for i in range(100, 450):
-        implement_average_magnitude_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")        
-    
+        implement_average_magnitude_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
+
 main()
