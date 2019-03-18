@@ -92,7 +92,7 @@ def easy_thresholding(img, angle_matrix, thresholding):
 def implement_pca_betweem_two_frames(image1, image2):
     pic1 = cv2.imread(image1)
     pic2 = cv2.imread(image2)
-    
+
 
     prvs = cv2.cvtColor(pic1,cv2.COLOR_BGR2GRAY)
     next = cv2.cvtColor(pic2,cv2.COLOR_BGR2GRAY)
@@ -124,7 +124,8 @@ def implement_pca_betweem_two_frames(image1, image2):
     #cv2.imshow('pca_foreground_matrix',pca_foreground_matrix)
     #cv2.imshow('pca_background_matrix',pca_background_matrix)
 
-    #cv2.imwrite('pca_binary_mask.png',draw_flow(car1, prvs, flow, 16))
+    cv2.imwrite('angle_matrix.png',angle_matrix)
+    cv2.imwrite('flow.png',draw_flow(car1, prvs, flow, 16))
     cv2.imwrite('pca_back_ground_matrix_'+str(image1)+'.png',pca_background_matrix)
     #cv2.imwrite('pca_background_matrix.png',pca_background_matrix)
 
@@ -133,9 +134,9 @@ def implement_pca_betweem_two_frames(image1, image2):
 
 
 def main():
-    
+
     pre = "bear02_0"
     for i in range(100, 200):
-        implement_pca_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")        
+        implement_pca_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
 
 main()
