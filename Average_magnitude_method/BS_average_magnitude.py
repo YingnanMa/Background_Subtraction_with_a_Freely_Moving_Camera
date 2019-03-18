@@ -61,14 +61,14 @@ def convert_to_angles(flow_matrix):
 
     return angles_matrix
 
-def main():
+def implement_average_magnitude_betweem_two_frames(image1, image2):
     #read image
-    car1 = cv2.imread("bear02_0055.jpg")
-    car2 = cv2.imread("bear02_0056.jpg")
+    img1 = cv2.imread(image1)
+    img2 = cv2.imread(image2)
 
     #convert BGR to Gray
-    prvs = cv2.cvtColor(car1,cv2.COLOR_BGR2GRAY)
-    next = cv2.cvtColor(car2,cv2.COLOR_BGR2GRAY)
+    prvs = cv2.cvtColor(img1,cv2.COLOR_BGR2GRAY)
+    next = cv2.cvtColor(img2,cv2.COLOR_BGR2GRAY)
 
     #calculate optical flow
     flow = cv2.calcOpticalFlowFarneback(prvs,next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
@@ -89,11 +89,19 @@ def main():
     foreground = foreground.astype(np.uint8)
 
     #show image
-    cv2.imshow('foreground', foreground)
+    #cv2.imshow('foreground', foreground)
 
     #write image
-    cv2.imwrite('foreground.png',foreground*20)
+    cv2.imwrite('foreground_'+str(image1)+'.png',foreground*50)
 
     #destroy table
     cv2.destroyAllWindows()
+    
+    
+def main():
+    
+    pre = "bear02_0"
+    for i in range(100, 450):
+        implement_average_magnitude_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")        
+    
 main()
