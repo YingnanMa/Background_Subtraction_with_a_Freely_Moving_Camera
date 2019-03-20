@@ -42,11 +42,11 @@ def main():
     images = []
     
     pre = "pca_fore_ground_matrix_bear02_0"
-    for i in range(100, 457):
+    for i in range(100, 458):
         images.append(str(pre + str(i) + ".jpg.png"))
         
 
     
-    a = make_video(images, fps = 15, outvid = "pca_fore_ground.avi")
+    a = make_video(images, fps = 15, outvid = "robust_pca_fore_ground.avi")
     
 main()
