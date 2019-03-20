@@ -42,7 +42,7 @@ def main():
     images = []
     
     pre = "pca_back_ground_matrix_bear02_0"
-    for i in range(100, 200):
+    for i in range(100, 457):
         images.append(str(pre + str(i) + ".jpg.png"))
         
 

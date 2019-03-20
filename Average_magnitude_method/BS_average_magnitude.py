@@ -99,7 +99,7 @@ def main():
 
     #implement background subtraction to all frames
     pre = "bear02_0"
-    for i in range(100, 458):
+    for i in range(100, 450):
         implement_average_magnitude_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
 
 main()

@@ -61,7 +61,7 @@ def convert_to_angles(flow_matrix):
 
     return angles_matrix
 
-def implement_average_angle_betweem_two_frames(image1, image2):
+def implement_average_magnitude_betweem_two_frames(image1, image2):
     #read image
     img1 = cv2.imread(image1)
     img2 = cv2.imread(image2)
@@ -89,7 +89,7 @@ def implement_average_angle_betweem_two_frames(image1, image2):
     foreground = foreground.astype(np.uint8)
 
     #write image
-    cv2.imwrite('foreground_'+str(image1)+'.png',foreground*1)
+    cv2.imwrite('foreground_'+str(image1)+'.png',foreground)
 
     #destroy table
     cv2.destroyAllWindows()
@@ -99,7 +99,7 @@ def main():
 
     #implement background subtraction to all frames
     pre = "bear02_0"
-    for i in range(100, 458):
-        implement_average_angle_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
+    for i in range(100, 450):
+        implement_average_magnitude_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
 
 main()
