@@ -90,52 +90,42 @@ def easy_thresholding(img, angle_matrix, thresholding):
     return foreground_matrix, binary_mask
 
 def implement_pca_betweem_two_frames(image1, image2):
+
+    #read image
     pic1 = cv2.imread(image1)
     pic2 = cv2.imread(image2)
-    
 
+    #convert BGR to Gray
     prvs = cv2.cvtColor(pic1,cv2.COLOR_BGR2GRAY)
     next = cv2.cvtColor(pic2,cv2.COLOR_BGR2GRAY)
 
+    #calculate optical flow
     flow = cv2.calcOpticalFlowFarneback(prvs,next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
 
-
-    # _ is magnitude and angle_matrix is measure by degree now.
+    #obtain angle matrix: _ is magnitude and angle_matrix is measure by degree now.
     _, angle_matrix = cv2.cartToPolar(flow[..., 0], flow[..., 1], angleInDegrees = True)
-
-    #np.imwrite(angle_matrix)
 
     #implement Robust PCA based on the coarse foreground
     pca_implement=Robust_pca(angle_matrix)
     pca_background_matrix,pca_foreground_matrix=pca_implement.generate_pca()
-    #pca_foreground_matrix, easy_binary_mask = easy_thresholding(prvs, pca_foreground_matrix, 170)
 
-    #angle_matrix = (angle_matrix/360)*255
-
-    #cv2.imshow('angle_matrix', angle_matrix)
-
-    #pca_binary_mask=Robust_pca(easy_binary_mask)
-
+    #convert to uint8
     pca_foreground_matrix= pca_foreground_matrix.astype(np.uint8)
     pca_background_matrix= pca_background_matrix.astype(np.uint8)
-    #pca_binary_mask = pca_binary_mask.astype(np.uint8)
 
-    #cv2.imshow('pca_binary_mask',pca_binary_mask)
-    #cv2.imshow('pca_foreground_matrix',pca_foreground_matrix)
-    #cv2.imshow('pca_background_matrix',pca_background_matrix)
-
-    #cv2.imwrite('pca_binary_mask.png',draw_flow(car1, prvs, flow, 16))
+    #write image
     cv2.imwrite('pca_back_ground_matrix_'+str(image1)+'.png',pca_background_matrix)
-    #cv2.imwrite('pca_background_matrix.png',pca_background_matrix)
+    #cv2.imwrite('pca_fore_ground_matrix_'+str(image1)+'.png',pca_foreground_matrix)
 
-    #k = cv2.waitKey(0)
+    #destroy table
     cv2.destroyAllWindows()
 
 
 def main():
-    
+
+    #implement background subtraction to all frames
     pre = "bear02_0"
     for i in range(100, 200):
-        implement_pca_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")        
+        implement_pca_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
 
 main()
