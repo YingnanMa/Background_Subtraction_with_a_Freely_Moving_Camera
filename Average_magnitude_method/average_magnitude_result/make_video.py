@@ -42,7 +42,7 @@ def main():
     images = []
     
     pre = "foreground_bear02_0"
-    for i in range(100, 200):
+    for i in range(100, 449):
         images.append(str(pre + str(i) + ".jpg.png"))
         
 
