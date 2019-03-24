@@ -68,9 +68,10 @@ def draw_flow(img, gray, flow, step=16):
     fx, fy = flow[y,x].T
     lines = np.vstack([x, y, x+fx, y+fy]).T.reshape(-1, 2, 2)
     lines = np.int32(lines)
+    
 
     vis = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
-    vis = 255 - vis
+    #vis = 255 - vis
     rad = int(step/2)
 
     i = 0
@@ -78,7 +79,7 @@ def draw_flow(img, gray, flow, step=16):
         pv = img[y1, x1]
         col = (int(pv[0]), int(pv[1]), int(pv[2]))
         r = rad - int(rad * abs(fx[i]) *.05)
-        cv2.circle(vis, (x1, y1), abs(r), col, -1)
+        #cv2.circle(vis, (x1, y1), abs(r), col, -1)
         i+=1
     cv2.polylines(vis, lines, False, (255, 255, 0))
     return vis
@@ -117,7 +118,7 @@ def draw_flow_betweem_two_frames(image1, image2):
     #calculate optical flow
     flow = cv2.calcOpticalFlowFarneback(prvs, next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
     
-    cv2.imwrite('flow_'+str(image1)+'.png',draw_flow(img1, prvs, flow, 20))    
+    cv2.imwrite('flow_'+str(image1)+'.png',draw_flow(img1, prvs, flow, 10))    
 
     #destroy table
     cv2.destroyAllWindows()
