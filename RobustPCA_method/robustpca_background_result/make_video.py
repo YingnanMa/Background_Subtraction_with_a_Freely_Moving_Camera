@@ -6,7 +6,7 @@ def make_video(images, outvid=None, fps=5, size=None,
                is_color=True, format="XVID"):
     """
     Create a video from a list of images.
- 
+
     @param      outvid      output video
     @param      images      list of images to use in the video
     @param      fps         frame per second
@@ -14,7 +14,7 @@ def make_video(images, outvid=None, fps=5, size=None,
     @param      is_color    color
     @param      format      see http://www.fourcc.org/codecs.php
     @return                 see http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_gui/py_video_display/py_video_display.html
- 
+
     The function relies on http://opencv-python-tutroals.readthedocs.org/en/latest/.
     By default, the video will have the size of the first image.
     It will resize every image to this size before adding them to the video.
@@ -40,13 +40,13 @@ def make_video(images, outvid=None, fps=5, size=None,
 
 def main():
     images = []
-    
-    pre = "pca_back_ground_matrix_bear02_0"
-    for i in range(100, 457):
-        images.append(str(pre + str(i) + ".jpg.png"))
-        
 
-    
+    pre = "pca_back_ground_matrix_bear02_0"
+    for i in range(100, 375):
+        images.append(str(pre + str(i) + ".jpg.png"))
+
+
+
     a = make_video(images, fps = 15, outvid = "pca_back_ground.avi")
-    
+
 main()
