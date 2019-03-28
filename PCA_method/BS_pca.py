@@ -42,28 +42,13 @@ def draw_flow(img, gray, flow, step=16):
     return vis
 
 """
-function convert_to_angles() will transfer flow matrix to angle matrix, which
-represented by pi value.
+function implement_pca_betweem_two_frames() will implement normal PCA for every two frame
 
 Parameters:
-    flow_matrix - the flow matrix represented by offset of x and y
+    image1 - the previous image
+    image2 - the new image
 
-Returns:
-    angles_matrix - the matrix represneted by degree value.
 """
-def convert_to_angles(flow_matrix):
-
-    flow_matrix_shape = flow_matrix.shape
-    angles_matrix = np.zeros(flow_matrix_shape[:2])
-
-    for x, y in product(range(flow_matrix_shape[0]), range(flow_matrix_shape[1])):
-        offset_data = flow_matrix[x][y]
-        angle = np.arctan(offset_data[0]/offset_data[1])
-        angles_matrix[x][y] = angle
-
-    return angles_matrix
-
-
 def implement_pca_betweem_two_frames(image1, image2):
 
     #read image
@@ -94,12 +79,11 @@ def implement_pca_betweem_two_frames(image1, image2):
     #destroy table
     cv2.destroyAllWindows()
 
-
 def main():
 
     #implement background subtraction to all frames
     pre = "bear02_0"
-    for i in range(100, 458):
+    for i in range(100, 376):
         implement_pca_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
 
 main()
