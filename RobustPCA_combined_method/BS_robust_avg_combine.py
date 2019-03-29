@@ -305,9 +305,47 @@ def main():
                 absname = "mag_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
                 newname = "modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
                 os.rename(absname, newname)
+            else:
+                absname = "ang_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
+                newname = "modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
+                os.rename(absname, newname)
         else:
             absname = "ang_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
             newname = "modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
             os.rename(absname, newname)
+
+    #implement SLIC superpixel
+    for i in range(100,375):
+        img_compare=cv2.imread("modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png")
+        img_compare=cv2.cvtColor(img_compare,cv2.COLOR_BGR2GRAY)
+        white_compare=is_scale(img_compare)
+
+        #compare superpixel with foreground result
+        img_super=skimage.io.imread(pre+str(i)+".jpg")
+        img_super=img_as_float(img_super)
+        img_shape=img_compare.shape
+        optimized_mask=np.zeros(img_shape)
+
+        #implement slic superpixel
+        segments_slic = slic(img_super, n_segments=300, compactness=10, sigma=1)
+        number_of_segment = len(np.unique(segments_slic))
+        for s in range(number_of_segment):
+            total_number = 0
+            white_count = 0
+            position = []
+            for j in range(img_shape[0]):
+                for k in range(img_shape[1]):
+                    if segments_slic[j][k] == s:
+                        total_number +=1
+                        position.append([j, k])
+                        if img_compare[j][k] > 100:
+                            white_count += 1
+            print(s)
+            if white_count / total_number > 0.2:
+                for position_index in position:
+                    optimized_mask[position_index[0]][position_index[1]] = 255
+
+        cv2.imwrite( "optimized_mask"+ str(i)+".jpg.png", optimized_mask)
+
 
 main()
