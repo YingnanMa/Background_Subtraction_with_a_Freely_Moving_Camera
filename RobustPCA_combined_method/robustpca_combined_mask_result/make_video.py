@@ -47,7 +47,7 @@ def main():
     save_list = []
 
     #repalce ith frame by using mag_pre
-    for i in range(100, 375):
+    for i in range(100, 374):
         print(i)
 
         img1 = cv2.imread(str(pre + str(i) + ".jpg.png"))

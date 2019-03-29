@@ -348,10 +348,14 @@ def main():
         elif white_compare<0.12:
             n_segments=256
             thresh_super=0.25
-        #handle noise case or detailed case
+        #handle detailed case
+        elif white_compare<0.16:
+            n_segments=640
+            thresh_super=0.3
+        #handle noise case
         else:
             n_segments=1024
-            thresh_super=0.3
+            thresh_super=0.4
 
         #implement slic superpixel
         segments_slic = slic(img_super, n_segments, compactness=10, sigma=1)
