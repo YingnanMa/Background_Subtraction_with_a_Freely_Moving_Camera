@@ -39,28 +39,10 @@ def make_video(images, outvid=None, fps=5, size=None,
     return vid
 
 
-#is_scale function uses thresholding to check if there is scaling operation in video
-def is_scale(img1):
-    white_points = 0
-    img1_shape = img1.shape
-    total_pixels = img1_shape[0] * img1_shape[1]
-    for i in range(img1_shape[0]):
-        for j in range(img1_shape[1]):
-            if img1[i][j] > 100:
-                white_points += 1
-    if white_points / total_pixels > 0.25:
-        return True
-    else:
-        return False
-
-
-
 def main():
     images = []
 
     pre = "modified_pca_binary_mask_bear02_0"
-
-    mag_pre = "mag_pca_binary_mask_bear02_0"
 
     save_list = []
 
@@ -71,10 +53,7 @@ def main():
         img1 = cv2.imread(str(pre + str(i) + ".jpg.png"))
         img1 = cv2.cvtColor(img1,cv2.COLOR_BGR2GRAY)
 
-        if is_scale(img1):
-            images.append(str(mag_pre + str(i) + ".jpg.png"))
-        else:
-            images.append(str(pre + str(i) + ".jpg.png"))
+        images.append(str(pre + str(i) + ".jpg.png"))
 
     a = make_video(images, fps = 15, outvid = "RobustPCA_combined_mask.avi")
 
