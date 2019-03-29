@@ -18,7 +18,7 @@ class Robust_pca:
         self.mu=10*self.lam
         self.mu_inv=1/(self.mu)
         self.tolerance=1e-6
-        self.max_iter=1000
+        self.max_iter=800
 
 
     def S_function(self,M,tau):

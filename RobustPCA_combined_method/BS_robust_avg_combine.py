@@ -3,7 +3,13 @@ from itertools import product
 import numpy as np
 from Robust_PCA import Robust_pca
 import os
-
+import skimage
+from skimage.data import astronaut
+from skimage.color import rgb2gray
+from skimage.filters import sobel
+from skimage.segmentation import felzenszwalb, slic, quickshift, watershed
+from skimage.segmentation import mark_boundaries
+from skimage.util import img_as_float
 
 # reference:
 # https://www.digifie.jp/blog/archives/1448
@@ -309,13 +315,21 @@ def main():
                 absname = "ang_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
                 newname = "modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
                 os.rename(absname, newname)
+        elif white_ang<0.06:
+            if white_ang>white_mag:
+                absname = "ang_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
+                newname = "modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
+                os.rename(absname, newname)
+            else:
+                absname = "mag_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
+                newname = "modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
+                os.rename(absname, newname)
         else:
             absname = "ang_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
             newname = "modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
             os.rename(absname, newname)
 
-    #implement SLIC superpixel
-    for i in range(100,375):
+        #implement SLIC superpixel
         img_compare=cv2.imread("modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png")
         img_compare=cv2.cvtColor(img_compare,cv2.COLOR_BGR2GRAY)
         white_compare=is_scale(img_compare)
@@ -326,8 +340,21 @@ def main():
         img_shape=img_compare.shape
         optimized_mask=np.zeros(img_shape)
 
+        #handle edge case
+        if white_compare<0.09:
+            n_segments=128
+            thresh_super=0.2
+        #handle good case
+        elif white_compare<0.12:
+            n_segments=256
+            thresh_super=0.25
+        #handle noise case or detailed case
+        else:
+            n_segments=1024
+            thresh_super=0.3
+
         #implement slic superpixel
-        segments_slic = slic(img_super, n_segments=300, compactness=10, sigma=1)
+        segments_slic = slic(img_super, n_segments, compactness=10, sigma=1)
         number_of_segment = len(np.unique(segments_slic))
         for s in range(number_of_segment):
             total_number = 0
@@ -341,11 +368,10 @@ def main():
                         if img_compare[j][k] > 100:
                             white_count += 1
             print(s)
-            if white_count / total_number > 0.2:
+            if white_count / total_number > thresh_super:
                 for position_index in position:
                     optimized_mask[position_index[0]][position_index[1]] = 255
 
         cv2.imwrite( "optimized_mask"+ str(i)+".jpg.png", optimized_mask)
-
 
 main()
