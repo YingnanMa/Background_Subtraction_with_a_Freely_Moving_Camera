@@ -83,11 +83,11 @@ Parameters:
     prvs - the previous image
 
 """
-def get_mask(pca_foreground_matrix, prvs):
+def get_mask(pca_background_matrix, prvs):
 
-    mean_value = pca_foreground_matrix.mean()
+    mean_value = pca_background_matrix.mean()
 
-    mask_matrix = pca_foreground_matrix - mean_value
+    mask_matrix = pca_background_matrix - mean_value
 
     mask_matrix = np.absolute(mask_matrix*3.7)
 
