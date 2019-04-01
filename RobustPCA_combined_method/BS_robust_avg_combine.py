@@ -287,7 +287,7 @@ def main():
 
     #implement background subtraction to all frames using avg angle method
     pre = "bear02_0"
-    for i in range(100,375):
+    for i in range(100,374):
         implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
 
         #check the frames that use avg angle method
