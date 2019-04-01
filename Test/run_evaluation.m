@@ -9,7 +9,7 @@ clc
 %[files data] = loadData_plus(gt_pa, gt_ft);
 
 gtim = double(imread('bear02_0458_gt.png'));
-fgim = double(imread('modified_pca_binary_mask_bear02_0458.jpg.png'));
+fgim = double(imread('optimized_mask458.jpg.png'));
 
 
 [TP FP FN TN] = evaluation_entry(fgim,gtim);
