@@ -65,7 +65,7 @@ original_image: str, path for orignal image
 mask_image, str, path ofr mask image
 """
 
-def one_image_superpixel(original_image, mask_image):
+def one_image_superpixel(original_image, mask_image,sp_thre1,sp_thre2):
 
     ori_img = skimage.io.imread(original_image)
     ori_img = img_as_float(ori_img)
@@ -81,14 +81,14 @@ def one_image_superpixel(original_image, mask_image):
 
     for i in candidates:
         print("segmentation for ", i)
-        super_pixel_result = find_one_super_pixel(ori_img, mask_img, i, 0.2)
+        super_pixel_result = find_one_super_pixel(ori_img, mask_img, i, sp_thre1)
         for j in range(array_length):
             if super_pixel_result[j] == 1.0:
                 sum_of_super_pixel[j] += 1
 
     average_superpixel_result = np.zeros(array_length)
     for i in range(array_length):
-        if sum_of_super_pixel[i] > 3:
+        if sum_of_super_pixel[i] >= sp_thre2:
             average_superpixel_result[i] = 255
 
     average_superpixel_result=np.reshape(average_superpixel_result, img_shape[:-1])
