@@ -54,7 +54,7 @@ class Robust_pca:
             #print information iteratively
             if i==1 or (i%10)==0 or err<self.tolerance:
                 print_info=' iteration : {0} ; error : {1}'.format(i, err)
-                print(print_info)
+                #print(print_info)
             #check convergence
             if err<self.tolerance:
                 break

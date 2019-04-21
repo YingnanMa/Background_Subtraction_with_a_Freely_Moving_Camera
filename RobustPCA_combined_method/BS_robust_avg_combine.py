@@ -10,7 +10,7 @@ from skimage.filters import sobel
 from skimage.segmentation import felzenszwalb, slic, quickshift, watershed
 from skimage.segmentation import mark_boundaries
 from skimage.util import img_as_float
-
+from SuperPixel import one_image_superpixel as super_pixel
 # reference:
 # https://www.digifie.jp/blog/archives/1448
 
@@ -154,7 +154,6 @@ def implement_pca_betweem_two_frames_ang(image1, image2):
 
     #obtain angle matrix: _ is magnitude and angle_matrix is measure by degree now.
     _, angle_matrix = cv2.cartToPolar(flow[..., 0], flow[..., 1], angleInDegrees = True)
-    #angle_matrix=convert_to_angles(flow)
 
     #modify all 360 degree as 0
     angle_shape = angle_matrix.shape
@@ -164,7 +163,6 @@ def implement_pca_betweem_two_frames_ang(image1, image2):
             if angle_matrix[i][j] >=359 and angle_matrix[i][j]<=360:
                 angle_matrix[i][j]=0
 
-    #print(angle_matrix)
     #implement Robust PCA based on the coarse foreground
     pca_implement=Robust_pca(angle_matrix)
     pca_background_matrix, pca_foreground_matrix=pca_implement.generate_pca()
@@ -179,10 +177,7 @@ def implement_pca_betweem_two_frames_ang(image1, image2):
     binary_mask = binary_mask.astype(np.uint8)
 
     #write image
-    #cv2.imwrite('pca_back_ground_matrix_'+str(image1)+'.png',pca_background_matrix)
-    #cv2.imwrite('pca_fore_ground_matrix_'+str(image1)+'.png',pca_foreground_matrix)
     cv2.imwrite('ang_pca_binary_mask_'+str(image1)+'.png',binary_mask)
-    #cv2.imwrite('modified_pca_true_scene'+str(image1)+'.png',foreground_matrix)
 
     #destroy table
     cv2.destroyAllWindows()
@@ -274,39 +269,43 @@ def implement_pca_betweem_two_frames_mag(image1, image2):
     binary_mask = binary_mask.astype(np.uint8)
 
     #write image
-    #cv2.imwrite('pca_back_ground_matrix_'+str(image1)+'.png',pca_background_matrix)
-    #cv2.imwrite('pca_fore_ground_matrix_'+str(image1)+'.png',pca_foreground_matrix)
     cv2.imwrite('mag_pca_binary_mask_'+str(image1)+'.png',binary_mask)
-    #cv2.imwrite('mag_pca_true_scene'+str(image1)+'.png',foreground_matrix)
 
     #destroy table
     cv2.destroyAllWindows()
 
 
 def main():
-
-    #implement background subtraction to all frames using avg angle method
+    #implement background subtraction to all frames
     pre = "bear02_0"
-    for i in range(100,374):
-        implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
+    bear02_list=[1,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,458]
 
+    for i in bear02_list:
         #check the frames that use avg angle method
+        if i==458:
+            implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg")
+        else:
+            implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
+
         img_head = "ang_pca_binary_mask_bear02_0"
         img_check = cv2.imread(str(img_head + str(i) + ".jpg.png"))
         img_check = cv2.cvtColor(img_check,cv2.COLOR_BGR2GRAY)
         white_ang=is_scale(img_check)
-        print(white_ang)
+        print("angle "+ str(i) + " finished with white rate : "+ str(white_ang))
 
         #check the frames that use avg magnitude method
-        implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
+        if i==458:
+            implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg")
+        else:
+            implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
         img_head2 = "mag_pca_binary_mask_bear02_0"
         img_check2 = cv2.imread(str(img_head2 + str(i) + ".jpg.png"))
         img_check2 = cv2.cvtColor(img_check2,cv2.COLOR_BGR2GRAY)
         white_mag=is_scale(img_check2)
-        print(white_mag)
+        print("magnitude "+ str(i) + " finished with white rate : "+ str(white_mag))
 
-        #set threshodling to choose angle method or magnitude method
-        if white_ang>0.19:
+        #set adaptive threshodling to choose angle method or magnitude method
+        if white_ang>0.38:
             if white_ang>white_mag:
                 absname = "mag_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
                 newname = "modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
@@ -328,54 +327,12 @@ def main():
             absname = "ang_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
             newname = "modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png"
             os.rename(absname, newname)
+        print("choosing result "+ str(i) + " finished")
 
-        #implement SLIC superpixel
-        img_compare=cv2.imread("modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png")
-        img_compare=cv2.cvtColor(img_compare,cv2.COLOR_BGR2GRAY)
-        white_compare=is_scale(img_compare)
-
-        #compare superpixel with foreground result
-        img_super=skimage.io.imread(pre+str(i)+".jpg")
-        img_super=img_as_float(img_super)
-        img_shape=img_compare.shape
-        optimized_mask=np.zeros(img_shape)
-
-        #handle edge case
-        if white_compare<0.09:
-            n_segments=128
-            thresh_super=0.2
-        #handle good case
-        elif white_compare<0.12:
-            n_segments=256
-            thresh_super=0.25
-        #handle detailed case
-        elif white_compare<0.16:
-            n_segments=640
-            thresh_super=0.3
-        #handle noise case
-        else:
-            n_segments=1024
-            thresh_super=0.4
-
-        #implement slic superpixel
-        segments_slic = slic(img_super, n_segments, compactness=10, sigma=1)
-        number_of_segment = len(np.unique(segments_slic))
-        for s in range(number_of_segment):
-            total_number = 0
-            white_count = 0
-            position = []
-            for j in range(img_shape[0]):
-                for k in range(img_shape[1]):
-                    if segments_slic[j][k] == s:
-                        total_number +=1
-                        position.append([j, k])
-                        if img_compare[j][k] > 100:
-                            white_count += 1
-            print(s)
-            if white_count / total_number > thresh_super:
-                for position_index in position:
-                    optimized_mask[position_index[0]][position_index[1]] = 255
-
+        #optimized by superpixel
+        original_name=pre + str(i) + ".jpg"
+        optimized_mask=super_pixel(original_name,"modified_pca_binary_mask_bear02_0"+ str(i) + ".jpg.png")
         cv2.imwrite( "optimized_mask"+ str(i)+".jpg.png", optimized_mask)
+        print("superpixel "+ str(i) + " finished")
 
 main()
