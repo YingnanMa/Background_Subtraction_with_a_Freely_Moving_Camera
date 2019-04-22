@@ -180,6 +180,7 @@ def implement_pca_betweem_two_frames_ang(image1, image2, abso__ang_thre, count_a
 
     #destroy table
     cv2.destroyAllWindows()
+    return binary_mask
 
 
 #is_scale function uses thresholding to check white rate
@@ -272,7 +273,7 @@ def implement_pca_betweem_two_frames_mag(image1, image2,abso__mag_thre, count_ma
 
     #destroy table
     cv2.destroyAllWindows()
-
+    return binary_mask
 
 def main():
     #create thresholding dictionary, which tells the thresholding of datasets
@@ -285,7 +286,7 @@ def main():
     #index6:sp_thre1
     #index7:sp_thre2
     thre_dictionary={
-    "bear02":[3.7,48,20,10,0.38,0.06,0.2,4]
+    "bear02":[3.7,48,20,10,0.38,0.085,0.2,4]
     }
 
     #create ground truth dictionary, which tells the frame number of ground truth
@@ -316,9 +317,9 @@ def main():
         #check the frames that use avg angle method
         print("angle "+ str(i) + " is processing ")
         if i==458:
-            implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[0],thre_pick[1])
+            mask_ang=implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[0],thre_pick[1])
         else:
-            implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[0],thre_pick[1])
+            mask_ang=implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[0],thre_pick[1])
         img_head = "ang_pca_binary_mask_"+dataset_request+"_0"
         img_check = cv2.imread(str(img_head + str(i) + ".jpg.png"))
         img_check = cv2.cvtColor(img_check,cv2.COLOR_BGR2GRAY)
@@ -329,40 +330,27 @@ def main():
         #check the frames that use avg magnitude method
         print("magnitude "+ str(i) + " is processing ")
         if i==458:
-            implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[2],thre_pick[3])
+            mask_mag=implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[2],thre_pick[3])
         else:
-            implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[2],thre_pick[3])
-        img_head2 = "mag_pca_binary_mask_"+dataset_request+"_0"
-        img_check2 = cv2.imread(str(img_head2 + str(i) + ".jpg.png"))
-        img_check2 = cv2.cvtColor(img_check2,cv2.COLOR_BGR2GRAY)
-        white_mag=is_scale(img_check2)
-        print("magnitude "+ str(i) + " is finished with white rate : "+ str(white_mag))
+            mask_mag=implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[2],thre_pick[3])
+        #img_head2 = "mag_pca_binary_mask_"+dataset_request+"_0"
+        #img_check2 = cv2.imread(str(img_head2 + str(i) + ".jpg.png"))
+        #img_check2 = cv2.cvtColor(img_check2,cv2.COLOR_BGR2GRAY)
+        #white_mag=is_scale(img_check2)
+        #print("magnitude "+ str(i) + " is finished with white rate : "+ str(white_mag))
 
 
-        #set adaptive threshodling to choose angle method or magnitude method
-        if white_ang>thre_pick[4]:
-            if white_ang>white_mag:
-                absname = "mag_pca_binary_mask_"+dataset_request+"_0"+ str(i) + ".jpg.png"
-                newname = "modified_pca_binary_mask_"+dataset_request+"_0"+ str(i) + ".jpg.png"
-                os.rename(absname, newname)
-            else:
-                absname = "ang_pca_binary_mask_"+dataset_request+"_0"+ str(i) + ".jpg.png"
-                newname = "modified_pca_binary_mask_"+dataset_request+"_0"+ str(i) + ".jpg.png"
-                os.rename(absname, newname)
-        elif white_ang<thre_pick[5]:
-            if white_ang>white_mag:
-                absname = "ang_pca_binary_mask_"+dataset_request+"_0"+str(i) + ".jpg.png"
-                newname = "modified_pca_binary_mask_"+dataset_request+"_0"+ str(i) + ".jpg.png"
-                os.rename(absname, newname)
-            else:
-                absname = "mag_pca_binary_mask_"+dataset_request+"_0"+ str(i) + ".jpg.png"
-                newname = "modified_pca_binary_mask_"+dataset_request+"_0"+ str(i) + ".jpg.png"
-                os.rename(absname, newname)
+        #set adaptive threshodling to decide summation and subtraction
+        if white_ang>=thre_pick[4]:
+            #mask_ang mask_mag keep common white
+            #save as modify
+        elif white_ang<=thre_pick[5]:
+            #mask_ang white pixel plus mask_mag white pixel
+            #save as modify
         else:
             absname = "ang_pca_binary_mask_"+dataset_request+"_0"+ str(i) + ".jpg.png"
             newname = "modified_pca_binary_mask_"+dataset_request+"_0"+ str(i) + ".jpg.png"
             os.rename(absname, newname)
-        print("choosing result "+ str(i) + " finished")
 
         #optimized by superpixel
         original_name=pre + str(i) + ".jpg"
