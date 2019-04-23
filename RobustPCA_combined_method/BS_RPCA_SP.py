@@ -181,7 +181,7 @@ def implement_pca_betweem_two_frames_ang(image1, image2, abso__ang_thre, count_a
 
     #destroy table
     cv2.destroyAllWindows()
-    
+
 
 
 #is_scale function uses thresholding to check white rate
@@ -287,7 +287,7 @@ def main():
     #index6:sp_thre1
     #index7:sp_thre2
     thre_dictionary={
-    "bear02":[3.7,48,20,10,0.3,0.06,0.2,4]
+    "bear02":[3.7,48,20,10,0.3,0.06,0.31,3]
     }
 
     #create ground truth dictionary, which tells the frame number of ground truth
