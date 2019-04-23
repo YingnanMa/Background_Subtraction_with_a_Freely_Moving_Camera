@@ -288,7 +288,7 @@ def main():
     #index7:sp_thre2
     thre_dictionary={
     #        abso__ang_thre count_ang_thre abso__mag_thre count_mag_thre choose_thre1 choose_thre2 sp_thre1 sp_thre2
-    "bear02":[3.7,           48,           20,            10,            0.38,        0.085,        0.2,    4]
+    "bear02":[3.7,           48,           20,            10,            0.3,        0.06,        0.2,    4]
     }
 
     #create ground truth dictionary, which tells the frame number of ground truth
