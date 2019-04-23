@@ -11,6 +11,7 @@ from skimage.segmentation import felzenszwalb, slic, quickshift, watershed
 from skimage.segmentation import mark_boundaries
 from skimage.util import img_as_float
 from SuperPixel import one_image_superpixel as super_pixel
+from operator import add
 # reference:
 # https://www.digifie.jp/blog/archives/1448
 
@@ -286,7 +287,8 @@ def main():
     #index6:sp_thre1
     #index7:sp_thre2
     thre_dictionary={
-    "bear02":[3.7,48,20,10,0.38,0.085,0.2,4]
+    #        abso__ang_thre count_ang_thre abso__mag_thre count_mag_thre choose_thre1 choose_thre2 sp_thre1 sp_thre2
+    "bear02":[3.7,           48,           20,            10,            0.38,        0.085,        0.2,    4]
     }
 
     #create ground truth dictionary, which tells the frame number of ground truth
@@ -316,35 +318,67 @@ def main():
 
         #check the frames that use avg angle method
         print("angle "+ str(i) + " is processing ")
-        if i==458:
-            mask_ang=implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[0],thre_pick[1])
-        else:
-            mask_ang=implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[0],thre_pick[1])
+        #if i==458:
+        #    mask_ang=implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[0],thre_pick[1])
+        #else:
+        #    mask_ang=implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[0],thre_pick[1])
         img_head = "ang_pca_binary_mask_"+dataset_request+"_0"
-        img_check = cv2.imread(str(img_head + str(i) + ".jpg.png"))
-        img_check = cv2.cvtColor(img_check,cv2.COLOR_BGR2GRAY)
-        white_ang=is_scale(img_check)
-        print("angle "+ str(i) + " is finished with white rate : "+ str(white_ang))
+        #img_check = cv2.imread(str(img_head + str(i) + ".jpg.png"))
+        #img_check = cv2.cvtColor(img_check,cv2.COLOR_BGR2GRAY)
+        #white_ang=is_scale(img_check)
+        #print("angle "+ str(i) + " is finished with white rate : "+ str(white_ang))
 
 
         #check the frames that use avg magnitude method
-        print("magnitude "+ str(i) + " is processing ")
-        if i==458:
-            mask_mag=implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[2],thre_pick[3])
-        else:
-            mask_mag=implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[2],thre_pick[3])
-        #img_head2 = "mag_pca_binary_mask_"+dataset_request+"_0"
-        #img_check2 = cv2.imread(str(img_head2 + str(i) + ".jpg.png"))
-        #img_check2 = cv2.cvtColor(img_check2,cv2.COLOR_BGR2GRAY)
-        #white_mag=is_scale(img_check2)
-        #print("magnitude "+ str(i) + " is finished with white rate : "+ str(white_mag))
+        #print("magnitude "+ str(i) + " is processing ")
+        #if i==458:
+        #    mask_mag=implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[2],thre_pick[3])
+        #else:
+        #    mask_mag=implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[2],thre_pick[3])
+        img_head2 = "mag_pca_binary_mask_"+dataset_request+"_0"
 
 
         #set adaptive threshodling to decide summation and subtraction
+        mask_ang=cv2.imread(str(img_head + str(i) + ".jpg.png"))
+        mask_ang=cv2.cvtColor(mask_ang,cv2.COLOR_BGR2GRAY)
+        white_ang=is_scale(mask_ang)
+        mask_mag=cv2.imread(str(img_head2 + str(i) + ".jpg.png"))
+        mask_mag=cv2.cvtColor(mask_mag,cv2.COLOR_BGR2GRAY)
+        white_mag=is_scale(mask_mag)
+
+        matrix_shape = mask_mag.shape
+        array_length = matrix_shape[0] * matrix_shape[1]
+        mask_mag = np.reshape(mask_mag, array_length)
+        mask_ang = np.reshape(mask_ang, array_length)
+        mask_mag= mask_mag.astype(np.uint16)
+        mask_ang= mask_ang.astype(np.uint16)
+        combine_mask = mask_mag + mask_ang
+        #combine_mask= list(map(add, mask_mag, mask_ang))
+        #print(combine_mask)
         if white_ang>=thre_pick[4]:
+            new_mask =[]
+            for j in combine_mask:
+                if j == 510:
+                    new_mask.append(255)
+                else:
+                    new_mask.append(0)
+            new_mask=np.asarray(new_mask)
+            new_mask= new_mask.astype(np.uint8)
+            cv2.imwrite("modified_pca_binary_mask_"+dataset_request+"_0"+ str(i) + ".jpg.png",\
+                        np.reshape(new_mask, matrix_shape))
             #mask_ang mask_mag keep common white
             #save as modify
         elif white_ang<=thre_pick[5]:
+            new_mask = []
+            for j in combine_mask:
+                if j >= 255:
+                    new_mask.append(255)
+                else:
+                    new_mask.append(0)
+            new_mask=np.asarray(new_mask)
+            new_mask= new_mask.astype(np.uint8)
+            cv2.imwrite("modified_pca_binary_mask_"+dataset_request+"_0"+ str(i) + ".jpg.png",\
+                        np.reshape(new_mask, matrix_shape))
             #mask_ang white pixel plus mask_mag white pixel
             #save as modify
         else:
