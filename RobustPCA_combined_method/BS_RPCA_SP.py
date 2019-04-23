@@ -287,7 +287,7 @@ def main():
     #index6:sp_thre1
     #index7:sp_thre2
     thre_dictionary={
-    "bear02":[3.7,48,20,10,0.3,0.06,0.31,3]
+    "bear02":[3.7,48,20,10,0.3,0.06,0.33,3]
     }
 
     #create ground truth dictionary, which tells the frame number of ground truth
@@ -318,18 +318,18 @@ def main():
         #check the frames that use avg angle method
         print("angle "+ str(i) + " is processing ")
         if i==458:
-            implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[0],thre_pick[1])
+           implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[0],thre_pick[1])
         else:
-            implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[0],thre_pick[1])
+           implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[0],thre_pick[1])
         img_head = "ang_pca_binary_mask_"+dataset_request+"_0"
 
 
         #check the frames that use avg magnitude method
         print("magnitude "+ str(i) + " is processing ")
         if i==458:
-            implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[2],thre_pick[3])
+           implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[2],thre_pick[3])
         else:
-            implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[2],thre_pick[3])
+           implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[2],thre_pick[3])
         img_head2 = "mag_pca_binary_mask_"+dataset_request+"_0"
 
 
