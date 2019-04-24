@@ -83,7 +83,10 @@ def main():
 
     #implement background subtraction to all frames
     pre = "bear02_0"
-    for i in range(100, 376):
-        implement_pca_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
+    for i in range(100, 459):
+        if i==458:
+            implement_pca_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg")
+        else:
+            implement_pca_betweem_two_frames(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg")
 
 main()
