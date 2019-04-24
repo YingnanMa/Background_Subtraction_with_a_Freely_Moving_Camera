@@ -42,7 +42,7 @@ def main():
     images = []
 
     pre = "pca_fore_ground_matrix_bear02_0"
-    for i in range(100, 375):
+    for i in range(101, 375):
         images.append(str(pre + str(i) + ".jpg.png"))
 
     a = make_video(images, fps = 15, outvid = "pca_mask.avi")
