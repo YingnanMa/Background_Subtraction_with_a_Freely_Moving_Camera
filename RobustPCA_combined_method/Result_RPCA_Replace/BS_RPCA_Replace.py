@@ -301,14 +301,15 @@ def main():
 
     #implement background subtraction to all frames
     pre = dataset_request+"_0"
-    for i in range (100,300):
+    pre2 = dataset_request+"_0"
+    for i in range (100,459):
 
         #check the frames that use avg angle method
         print("angle "+ str(i) + " is processing ")
         if i==458:
-            implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[0],thre_pick[1])
+            implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre2 + str(i-1) + ".jpg",thre_pick[0],thre_pick[1])
         else:
-            implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[0],thre_pick[1])
+            implement_pca_betweem_two_frames_ang(pre + str(i) + ".jpg", pre2 + str(i+1) + ".jpg",thre_pick[0],thre_pick[1])
         img_head = "ang_pca_binary_mask_"+dataset_request+"_0"
         img_check = cv2.imread(str(img_head + str(i) + ".jpg.png"))
         img_check = cv2.cvtColor(img_check,cv2.COLOR_BGR2GRAY)
@@ -319,9 +320,9 @@ def main():
         #check the frames that use avg magnitude method
         print("magnitude "+ str(i) + " is processing ")
         if i==458:
-            implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i-1) + ".jpg",thre_pick[2],thre_pick[3])
+            implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre2 + str(i-1) + ".jpg",thre_pick[2],thre_pick[3])
         else:
-            implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre + str(i+1) + ".jpg",thre_pick[2],thre_pick[3])
+            implement_pca_betweem_two_frames_mag(pre + str(i) + ".jpg", pre2 + str(i+1) + ".jpg",thre_pick[2],thre_pick[3])
         img_head2 = "mag_pca_binary_mask_"+dataset_request+"_0"
         img_check2 = cv2.imread(str(img_head2 + str(i) + ".jpg.png"))
         img_check2 = cv2.cvtColor(img_check2,cv2.COLOR_BGR2GRAY)

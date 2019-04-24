@@ -12,8 +12,7 @@ from skimage.segmentation import mark_boundaries
 from skimage.util import img_as_float
 from SuperPixel import one_image_superpixel as super_pixel
 from operator import add
-# reference:
-# https://www.digifie.jp/blog/archives/1448
+
 
 """
 function draw_flow() will visulize the flow
@@ -25,8 +24,9 @@ Parameters:
 
 Returns:
     vis - the image matrix
-"""
 
+Reference:https://www.digifie.jp/blog/archives/1448
+"""
 def draw_flow(img, gray, flow, step=16):
 
     h, w = img.shape[:2]
@@ -278,14 +278,14 @@ def implement_pca_betweem_two_frames_mag(image1, image2,abso__mag_thre, count_ma
 
 def main():
     #create thresholding dictionary, which tells the thresholding of datasets
-    #index0:abso__ang_thre
-    #index1:count_ang_thre
-    #index2:abso__mag_thre
-    #index3:count_mag_thre
-    #index4:choose_thre1
-    #index5:choose_thre2
-    #index6:sp_thre1
-    #index7:sp_thre2
+    #index0:angle_absolute__thresholding
+    #index1:angle_count_thresholding
+    #index2:magnitude_absolute__thresholding
+    #index3:magnitude_count_thresholding
+    #index4:mask_revising_thresholding1
+    #index5:mask_revising_thresholding2
+    #index6:superpixel_thresholding1
+    #index7:superpixel_thresholding2
     thre_dictionary={
     "bear02":[3.7,48,20,10,0.3,0.06,0.33,3]
     }

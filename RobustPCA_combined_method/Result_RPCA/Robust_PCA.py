@@ -51,10 +51,7 @@ class Robust_pca:
             Yk=Yk+self.mu*(self.M-Lk-Sk)
             #compute the error using Frobenius norm
             err=np.linalg.norm(self.M-Lk-Sk,'fro')/np.linalg.norm(self.M,'fro')
-            #print information iteratively
-            if i==1 or (i%10)==0 or err<self.tolerance:
-                print_info=' iteration : {0} ; error : {1}'.format(i, err)
-                #print(print_info)
+
             #check convergence
             if err<self.tolerance:
                 break
