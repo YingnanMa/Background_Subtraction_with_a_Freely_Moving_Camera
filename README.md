@@ -1,5 +1,5 @@
 # Background_Subtraction_with_a_Freely_Moving_Camera
-This project is for CMPUT414 at University of Alberta. 
+Publication: ICSM 2019. 
 
 If you want to use the source code, please contact Yingnan Ma / Guanfang Dong.
 
